@@ -1,0 +1,23 @@
+<div *ngFor="let sp of gameState.player.spinners; index as i" class="spinner-box">
+  <!-- LEFT: Spinner name -->
+  <div class="spinner-left">
+    <p>{{ sp.currencyProduced | titlecase }}</p>
+  </div>
+
+  <!-- MIDDLE: Loader + Timer -->
+  <div class="spinner-middle" *ngIf="sp.active">
+    <!-- Only first spinner uses loader1, for example -->
+    <div [class]="loadingScreens[i]"></div>
+
+    <p>Next coin in: {{ sp.timer / 1000 | ceil }}s</p>
+  </div>
+
+  <!-- RIGHT: Buy button and cost -->
+  <div class="spinner-right">
+    <button (click)="buyMax(i)" [disabled]="gameState.getMaxAffordableQty(i) === 0">
+      Buy Max → {{ getCostText(i) }}
+    </button>
+
+    <p>Owned: x{{ sp.amount }} | Gain: {{ gameState.spinnerGain(sp) | number: '1.2-2' }}</p>
+  </div>
+</div>

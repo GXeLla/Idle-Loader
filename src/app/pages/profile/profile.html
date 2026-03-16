@@ -1,0 +1,21 @@
+<div class="profile-container">
+  <h2>Profile</h2>
+
+  <h3>Currencies</h3>
+  <div class="currency-list">
+    <div *ngFor="let c of gameState.player.currencies | keyvalue" class="currency-item">
+      <span class="currency-name">{{ c.key | titlecase }}:</span>
+      <span class="currency-value">{{ c.value | number:'1.2-2' }}</span>
+    </div>
+  </div>
+
+  <h3>Spinners</h3>
+  <div class="spinner-list">
+    <div *ngFor="let sp of gameState.player.spinners" class="spinner-item">
+      <span>{{ sp.name }}</span>
+      <span>Owned: {{ sp.amount }}</span>
+      <span *ngIf="sp.active">Active</span>
+      <span *ngIf="!sp.active">Inactive</span>
+    </div>
+  </div>
+</div>

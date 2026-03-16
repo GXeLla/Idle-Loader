@@ -1,0 +1,15 @@
+<div class="page-container">
+  <h2>Settings</h2>
+  <p>Here you can adjust game preferences.</p>
+
+  <div class="setting-item">
+    <input
+      type="checkbox"
+      id="animations-toggle"
+      [checked]="settings.animationsEnabled"
+      (change)="settings.toggleAnimations($event.target.checked)"
+    />
+    <label for="animations-toggle"></label>
+    <span style="margin-left: 10px">Enable Animations</span>
+  </div>
+</div>

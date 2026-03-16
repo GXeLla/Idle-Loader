@@ -1,0 +1,37 @@
+<div class="shop-container">
+  <h2>Shop / Trading Plaza</h2>
+
+  <!-- Conversion hint -->
+  <div class="shop-hint">
+    <p>{{ conversionRate }} → 1 ratio for converting currencies</p>
+  </div>
+
+  <ng-container *ngFor="let sp of gameState.player.spinners; index as i">
+    <!-- Only show if previous currency is unlocked or first -->
+    <ng-container *ngIf="i === 0 || gameState.player.spinners[i - 1].active">
+      <div class="shop-item">
+        <!-- LEFT: Name -->
+        <div class="shop-left">
+          <p>{{ getGainCurrency(i) }}</p>
+        </div>
+
+        <!-- MIDDLE: hint / loader preview -->
+        <div class="shop-middle">
+          <div *ngIf="i !== 0">
+            <p>{{ conversionRate }} {{ getCostCurrency(i) }} → 1 {{ getGainCurrency(i) }}</p>
+          </div>
+        </div>
+
+        <!-- RIGHT: Convert button -->
+        <div class="shop-right">
+          <button
+            (click)="convertCurrency(i)"
+            [disabled]="!canConvert(i)"
+          >
+            {{ getButtonText(i) }}
+          </button>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+</div>

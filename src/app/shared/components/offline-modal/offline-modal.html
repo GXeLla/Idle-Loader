@@ -1,0 +1,17 @@
+<div class="offline-modal" *ngIf="offline.showOfflineModal">
+
+  <div class="modal-box">
+
+    <h2>While you were away...</h2>
+
+    <div *ngFor="let r of worldRewards | keyvalue">
+      {{ r.key | titlecase }} +{{ r.value | number:'1.0-2' }}
+    </div>
+
+    <button (click)="claim()">
+      Claim Rewards
+    </button>
+
+  </div>
+
+</div>

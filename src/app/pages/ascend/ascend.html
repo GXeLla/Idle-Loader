@@ -1,0 +1,21 @@
+<div class="ascend-container">
+  <h2>Ascend</h2>
+
+  <div class="ascend-section">
+    <p>Cost: {{ ascendCost.amount }} {{ ascendCost.currency }}</p>
+    <button
+      [disabled]="!canAfford"
+      (click)="doAscend()">
+      Ascend
+    </button>
+  </div>
+
+  <div class="worlds-section" *ngIf="unlockedWorlds.length > 0">
+    <h3>Unlocked Worlds</h3>
+    <div class="world-buttons">
+      <button *ngFor="let world of unlockedWorlds" (click)="travelTo(world.id)">
+        {{ world.name }}
+      </button>
+    </div>
+  </div>
+</div>

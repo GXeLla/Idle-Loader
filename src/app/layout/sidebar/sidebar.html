@@ -1,0 +1,52 @@
+<div class="sidebar" *ngIf="player$ | async as player">
+  <!-- Tabs -->
+  <div class="tabs">
+    <button [class.active]="activeTab === 'spinners'" (click)="activeTab = 'spinners'">Spinners</button>
+    <button [class.active]="activeTab === 'totals'" (click)="activeTab = 'totals'">Totals</button>
+    <button [class.active]="activeTab === 'shop'" (click)="activeTab = 'shop'">Shop</button>
+  </div>
+
+  <!-- SPINNERS TAB -->
+  <div *ngIf="activeTab === 'spinners'">
+    <div *ngFor="let sp of sortSpinnersByValue(player.spinners); index as i" class="spinner-box">
+      <div class="spinner-left"><p>{{ sp.currencyProduced | titlecase }}</p></div>
+      <div class="spinner-middle" *ngIf="sp.active">
+        <p>Next coin in: {{ sp.timer / 1000 | ceil }}s</p>
+      </div>
+      <div class="spinner-right" *ngIf="sp.active">
+        <p>x{{ sp.amount }} || {{ 0.02 * sp.amount | number:'1.2-2' }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOTALS TAB -->
+  <div *ngIf="activeTab === 'totals'">
+    <div *ngFor="let sp of sortSpinnersByValue(player.spinners); index as i" class="spinner-box">
+      <div class="spinner-left"><p>{{ sp.currencyProduced | titlecase }}</p></div>
+      <div class="spinner-right">
+        <p>{{ getSpinnerTotal(sp, player.currencies) | number:'1.2-2' }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHOP TAB -->
+  <div *ngIf="activeTab === 'shop'">
+    <ng-container *ngFor="let sp of player.spinners; index as i">
+      <ng-container *ngIf="i === 0 || player.spinners[i - 1].active">
+        <div class="shop-item">
+          <div class="shop-left">
+            <p>{{ getGainCurrency(i) }}</p>
+          </div>
+          <div class="shop-middle" *ngIf="i !== 0">
+            <p>{{ conversionRate }} {{ getCostCurrency(i) }} → 1 {{ getGainCurrency(i) }}</p>
+          </div>
+          <div class="shop-right">
+            <button (click)="convertCurrency(i)" [disabled]="!canConvert(i)">
+              {{ getButtonText(i) }}
+            </button>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>
