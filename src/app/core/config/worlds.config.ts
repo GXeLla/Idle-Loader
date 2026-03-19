@@ -39,6 +39,16 @@ export const BASE_CURRENCIES = [
   'salmon',
   'periwinkle',
   'charcoal',
+  'crimson',
+  'amber',
+  'jade',
+  'ivory',
+  'cerulean',
+  'scarlet',
+  'ochre',
+  'azure',
+  'lilac',
+  'graphite',
 ];
 
 export interface WorldConfig {
