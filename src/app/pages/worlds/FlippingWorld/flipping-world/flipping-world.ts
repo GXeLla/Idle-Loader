@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { BaseWorld } from '../../base-world';
 import { GameStateService } from '../../../../core/state/game-state.service';
 import { SaveService } from '../../../../core/services/save';
+import { SettingsService } from '../../../../core/services/settings';
 
 @Component({
   selector: 'app-flipping-world',
@@ -13,7 +14,13 @@ import { SaveService } from '../../../../core/services/save';
 })
 export class FlippingWorld extends BaseWorld {
   worldId = 'flipping';
-  constructor(gameState: GameStateService, save: SaveService, offline: OfflineService) {
-    super(gameState, save, offline);
+  constructor(
+    gameState: GameStateService,
+    save: SaveService,
+    offline: OfflineService,
+    settings: SettingsService
+  ) {
+    super(gameState, save, offline, settings);
   }
 }
+

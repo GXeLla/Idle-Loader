@@ -5,7 +5,7 @@ import { ProfileComponent } from './pages/profile/profile';
 import { SettingsComponent } from './pages/settings/settings';
 
 // Worlds
-import { ClassicWorldComponent } from './pages/worlds/ClassicWorld/classic-world/classic-world';
+import { ClassicWorld } from './pages/worlds/ClassicWorld/classic-world/classic-world';
 import { BarsWorld } from './pages/worlds/BarsWorld/bars-world/bars-world';
 import { DotsWorld } from './pages/worlds/DotsWorld/dots-world/dots-world';
 import { DotsVsBarsWorld } from './pages/worlds/DotsVsBarsWorld/dots-vs-bars-world/dots-vs-bars-world';
@@ -53,7 +53,7 @@ export const routes: Routes = [
   { path: '', redirectTo: 'ClassicWorld', pathMatch: 'full' },
 
   // Worlds
-  { path: 'ClassicWorld', component: ClassicWorldComponent },
+  { path: 'ClassicWorld', component: ClassicWorld },
   { path: 'DotsWorld', component: DotsWorld },
   { path: 'BarsWorld', component: BarsWorld },
   { path: 'DotsVsBarsWorld', component: DotsVsBarsWorld },
@@ -106,3 +106,5 @@ export const routes: Routes = [
   // Fallback
   { path: '**', redirectTo: 'ClassicWorld' },
 ];
+//for 1 m coins in classic world
+// Object.keys(JSON.parse(localStorage.getItem('idle_clicker_save')).players.classic.currencies).forEach(k => { let s = JSON.parse(localStorage.getItem('idle_clicker_save')); s.players.classic.currencies[k] = 1000000; localStorage.setItem('idle_clicker_save', JSON.stringify(s)); location.reload(); });

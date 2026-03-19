@@ -4,7 +4,7 @@
 
     <h2>While you were away...</h2>
 
-    <div *ngFor="let r of worldRewards | keyvalue">
+    <div *ngFor="let r of worldRewards">
       {{ r.key | titlecase }} +{{ r.value | number:'1.0-2' }}
     </div>
 

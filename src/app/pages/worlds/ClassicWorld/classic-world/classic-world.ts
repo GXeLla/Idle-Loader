@@ -12,18 +12,17 @@ import { SettingsService } from '../../../../core/services/settings';
   standalone: true,
   imports: [CommonModule, CeilPipe],
   templateUrl: './classic-world.html',
-  styleUrls: ['./classic-world.scss'],
+  styleUrls: ['./classic-world.scss']
 })
-export class ClassicWorldComponent extends BaseWorld {
-  worldId = 'classic';
-  loadingScreens = Array.from({ length: 40 }, (_, i) => `loader${i + 1}`);
+export class ClassicWorld extends BaseWorld {
+  override worldId = 'classic';
 
   constructor(
     gameState: GameStateService,
     save: SaveService,
     offline: OfflineService,
-    public settings: SettingsService
+    settings: SettingsService
   ) {
-    super(gameState, save, offline);
+    super(gameState, save, offline, settings);
   }
 }

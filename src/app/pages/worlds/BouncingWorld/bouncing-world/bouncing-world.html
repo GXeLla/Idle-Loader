@@ -1,1 +1,38 @@
-<p>bouncing-world works!</p>
+<h2 class="world-title">{{ gameState.getVisitedWorld() | titlecase }} World</h2>
+
+<div *ngFor="let sp of gameState.player.spinners; index as i" class="spinner-box">
+  <!-- LEFT: Spinner name -->
+  <div class="spinner-left">
+    <p>{{ sp.currencyProduced | titlecase }}</p>
+  </div>
+
+  <!-- MIDDLE: Loader + Timer -->
+  <div class="spinner-middle" *ngIf="sp.active">
+    <!-- Loader clickable to open modal -->
+    <div [class]="loadingScreens[i]" (click)="sp.showModal = true"></div>
+
+    <p>Next coin in: {{ sp.timer / 1000 | ceil }}s</p>
+  </div>
+
+  <!-- RIGHT: Buy button and cost -->
+  <div class="spinner-right">
+    <button (click)="buyMax(i)" [disabled]="gameState.getMaxAffordableQty(i) === 0">
+      Buy Max → {{ getCostText(i) }}
+    </button>
+
+    <p>Owned: x{{ sp.amount }} | Gain: {{ gameState.spinnerGain(sp) | number: '1.2-2' }}</p>
+  </div>
+
+  <!-- Modal for showing CSS -->
+  <div class="modal" *ngIf="sp.showModal">
+    <div class="modal-content">
+      <span class="close" (click)="sp.showModal = false">&times;</span>
+      <h4>Loader {{ i + 1 }} CSS</h4>
+
+      <pre>{{ getLoaderHtml(i) }}</pre>
+      <p></p>
+      <pre>{{ sp.loaderCSS || 'No CSS defined' }}</pre>
+      <button (click)="copyCSS(sp.loaderCSS || '', $event)" class="copy-btn">Copy CSS</button>
+    </div>
+  </div>
+</div>

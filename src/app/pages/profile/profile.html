@@ -1,21 +1,37 @@
 <div class="profile-container">
-  <h2>Profile</h2>
 
-  <h3>Currencies</h3>
-  <div class="currency-list">
-    <div *ngFor="let c of gameState.player.currencies | keyvalue" class="currency-item">
-      <span class="currency-name">{{ c.key | titlecase }}:</span>
-      <span class="currency-value">{{ c.value | number:'1.2-2' }}</span>
+  <!-- World Tabs -->
+  <div class="world-tabs">
+    <button
+      *ngFor="let w of gameState.getUnlockedWorlds()"
+      [class.active]="w === selectedWorld"
+      (click)="selectWorld(w)">
+      {{ w | titlecase }}
+    </button>
+  </div>
+
+  <!-- Completion Bar -->
+  <div class="completion-container" *ngIf="currentPlayer">
+    <div class="completion-bar">
+      <div
+        class="completion-fill"
+        [style.width.%]="completionPercent">
+      </div>
+    </div>
+    <div class="completion-text">{{ completionPercent }}%</div>
+  </div>
+
+  <!-- Spinner List -->
+  <div class="spinner-list" *ngIf="currentPlayer">
+    <div class="spinner-item" *ngFor="let sp of currentPlayer.spinners">
+      <span>{{ sp.name | titlecase }}</span>
+      <span>{{ sp.amount }}</span>
     </div>
   </div>
 
-  <h3>Spinners</h3>
-  <div class="spinner-list">
-    <div *ngFor="let sp of gameState.player.spinners" class="spinner-item">
-      <span>{{ sp.name }}</span>
-      <span>Owned: {{ sp.amount }}</span>
-      <span *ngIf="sp.active">Active</span>
-      <span *ngIf="!sp.active">Inactive</span>
-    </div>
+  <!-- Total unlocked spinners -->
+  <div class="spinner-summary" *ngIf="currentPlayer">
+    Total unlocked: {{ spinnerCountText }}
   </div>
+
 </div>

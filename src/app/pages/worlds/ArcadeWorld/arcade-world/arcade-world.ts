@@ -12,18 +12,17 @@ import { SettingsService } from '../../../../core/services/settings';
   standalone: true,
   imports: [CommonModule, CeilPipe],
   templateUrl: './arcade-world.html',
-  styleUrls: ['./arcade-world.scss'],
+  styleUrls: ['./arcade-world.scss']
 })
 export class ArcadeWorld extends BaseWorld {
   worldId = 'arcade';
-  loadingScreens = Array.from({ length: 40 }, (_, i) => `loader${i + 1}`);
 
   constructor(
     gameState: GameStateService,
     save: SaveService,
     offline: OfflineService,
-    public settings: SettingsService
+    settings: SettingsService
   ) {
-    super(gameState, save, offline);
+    super(gameState, save, offline, settings);
   }
 }

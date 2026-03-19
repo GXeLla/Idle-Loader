@@ -4,6 +4,7 @@ import { OfflineService } from '../../../../core/services/offline.service';
 import { SaveService } from '../../../../core/services/save';
 import { GameStateService } from '../../../../core/state/game-state.service';
 import { BaseWorld } from '../../base-world';
+import { SettingsService } from '../../../../core/services/settings';
 
 @Component({
   selector: 'app-moving-world',
@@ -13,7 +14,12 @@ import { BaseWorld } from '../../base-world';
 })
 export class MovingWorld extends BaseWorld {
   worldId = 'moving';
-  constructor(gameState: GameStateService, save: SaveService, offline: OfflineService) {
-    super(gameState, save, offline);
+  constructor(
+    gameState: GameStateService,
+    save: SaveService,
+    offline: OfflineService,
+    settings: SettingsService
+  ) {
+    super(gameState, save, offline, settings);
   }
 }

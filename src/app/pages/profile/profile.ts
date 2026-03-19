@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { GameStateService } from '../../core/state/game-state.service';
+import { GameStateService, Player } from '../../core/state/game-state.service';
 
 @Component({
   selector: 'app-profile',
@@ -11,5 +11,40 @@ import { GameStateService } from '../../core/state/game-state.service';
 })
 export class ProfileComponent {
 
-  constructor(public gameState: GameStateService) {}
+  selectedWorld?: string;
+
+  constructor(public gameState: GameStateService) {
+    // default to first unlocked world
+    const worlds = this.gameState.getUnlockedWorlds();
+    this.selectedWorld = worlds.length > 0 ? worlds[0] : undefined;
+  }
+
+  /** Returns the player for the currently selected world */
+  get currentPlayer(): Player | undefined {
+    if (!this.selectedWorld) return undefined;
+    return this.gameState.players[this.selectedWorld];
+  }
+
+  /** Completion % = unlocked spinners / total spinners */
+  get completionPercent(): number {
+    const player = this.currentPlayer;
+    if (!player) return 0;
+
+    const unlocked = player.spinners.filter(sp => sp.amount > 0).length;
+    const total = player.spinners.length;
+    return total > 0 ? Math.round((unlocked / total) * 100) : 0;
+  }
+
+  /** Spinner count */
+  get spinnerCountText(): string {
+    const player = this.currentPlayer;
+    if (!player) return '0 / 0';
+    return `${player.spinners.filter(sp => sp.amount > 0).length} / ${player.spinners.length}`;
+  }
+
+  /** Switch tabs */
+  selectWorld(worldId: string) {
+    this.selectedWorld = worldId;
+  }
+
 }

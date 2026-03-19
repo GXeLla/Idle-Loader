@@ -16,11 +16,14 @@ export interface Spinner {
   unlockAfter?: string;
   colorClass: string;
   priceIncrement: number;
+  loaderCSS?: string;
+  showModal?: boolean;
 }
 
 export interface Player {
   currencies: Record<string, number>;
   spinners: Spinner[];
+  spinnerCount?: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -71,34 +74,148 @@ export class GameStateService {
 
   /** Initialize a world and mark as last visited */
   initCurrentWorld(worldId: string) {
+    const worldConfig = WORLDS.find((w) => w.id === worldId);
+    if (!worldConfig) throw new Error(`World not found: ${worldId}`);
+
+    const maxSpinners =
+      worldId === 'classic'
+        ? 40
+        : worldId === 'arcade'
+          ? 10
+          : worldId === 'bars'
+            ? 30
+            : worldId === 'dots'
+              ? 50
+              : worldId === 'dots-vs-bars'
+                ? 20
+                : worldId === 'spinner'
+                  ? 30
+                  : worldId === 'shapes'
+                    ? 40
+                    : worldId === 'polygons'
+                      ? 12
+                      : worldId === 'progress'
+                        ? 20
+                        : worldId === 'wobbling'
+                          ? 20
+                          : worldId === 'infinity'
+                            ? 20
+                            : worldId === 'zig-zag'
+                              ? 20
+                              : worldId === 'wavy'
+                                ? 16
+                                : worldId === 'mechanic'
+                                  ? 12
+                                  : worldId === 'continuous'
+                                    ? 10
+                                    : worldId === 'growing'
+                                      ? 10
+                                      : worldId === 'pulsing'
+                                        ? 10
+                                        : worldId === 'flipping'
+                                          ? 20
+                                          : worldId === 'hypnotic'
+                                            ? 20
+                                            : worldId === 'rolling'
+                                              ? 10
+                                              : worldId === 'glowing'
+                                                ? 12
+                                                : worldId === 'square'
+                                                  ? 11
+                                                  : worldId === 'bouncing'
+                                                    ? 12
+                                                    : worldId === 'filling'
+                                                      ? 20
+                                                      : worldId === 'circle'
+                                                        ? 11
+                                                        : worldId === 'square-vs-circle'
+                                                          ? 10
+                                                          : worldId === 'colorful'
+                                                            ? 20
+                                                            : worldId === 'nature'
+                                                              ? 16
+                                                              : worldId === 'time'
+                                                                ? 10
+                                                                : worldId === 'hungry'
+                                                                  ? 8
+                                                                  : worldId === 'shuriken'
+                                                                    ? 10
+                                                                    : worldId === 'dancers'
+                                                                      ? 10
+                                                                      : worldId === 'moving'
+                                                                        ? 10
+                                                                        : worldId === 'eyes'
+                                                                          ? 10
+                                                                          : worldId === 'line'
+                                                                            ? 20
+                                                                            : worldId === 'thin'
+                                                                              ? 10
+                                                                              : worldId === 'cut'
+                                                                                ? 10
+                                                                                : worldId ===
+                                                                                    'clones'
+                                                                                  ? 20
+                                                                                  : worldId ===
+                                                                                      'arrow'
+                                                                                    ? 10
+                                                                                    : worldId ===
+                                                                                        'blob'
+                                                                                      ? 20
+                                                                                      : worldId ===
+                                                                                          'maze'
+                                                                                        ? 10
+                                                                                        : worldId ===
+                                                                                            'factory'
+                                                                                          ? 8
+                                                                                          : worldId ===
+                                                                                              'three-d'
+                                                                                            ? 12
+                                                                                            : worldConfig
+                                                                                                .currencies
+                                                                                                .length;
+
+    let spinners: Spinner[];
+    let currencies: Record<string, number>;
+
     if (!this.players[worldId]) {
-      const worldConfig = WORLDS.find(w => w.id === worldId);
-      if (!worldConfig) throw new Error(`World not found: ${worldId}`);
-
-      const spinners: Spinner[] = worldConfig.currencies.map((c, i) => ({
-        name: `${worldId}_loader${i + 1}`,
-        amount: 0,
-        active: false,
-        minTime: 2000,
-        maxTime: 5000,
-        currencyProduced: `${worldId}_${c}`,
-        costCurrency: `${worldId}_${c}`,
-        timer: 0,
-        basePrice: worldConfig.basePrice,
-        priceIncrement: worldConfig.baseIncrement + Math.sqrt(i) * 0.01,
-        priceMultiplier: 1.01,
-        unlockAfter: i === 0 ? undefined : `${worldId}_loader${i}`,
-        colorClass: `loader${i + 1}`,
-      }));
-
-      const currencies: Record<string, number> = {};
-      worldConfig.currencies.forEach(c => currencies[`${worldId}_${c}`] = 0);
-
-      this.players[worldId] = { spinners, currencies };
+      // New player
+      spinners = worldConfig.currencies
+        .slice(0, maxSpinners)
+        .map((c, i) => this.createSpinner(worldId, c, i, worldConfig));
+      currencies = {};
+      worldConfig.currencies.forEach((c) => (currencies[`${worldId}_${c}`] = 0));
+    } else {
+      // Existing player: trim spinners to maxSpinners
+      const existing = this.players[worldId];
+      spinners = existing.spinners.slice(0, maxSpinners);
+      currencies = existing.currencies;
     }
+
+    this.players[worldId] = { spinners, currencies, spinnerCount: maxSpinners };
 
     this.lastVisitedWorld = worldId;
     this._player.next(this.players[worldId]);
+  }
+
+  // Helper to create spinner object
+  private createSpinner(worldId: string, c: string, i: number, worldConfig: any): Spinner {
+    return {
+      name: `${worldId}_loader${i + 1}`,
+      amount: 0,
+      active: false,
+      minTime: 2000,
+      maxTime: 5000,
+      currencyProduced: `${worldId}_${c}`,
+      costCurrency: `${worldId}_${c}`,
+      timer: 0,
+      basePrice: worldConfig.basePrice,
+      priceIncrement: worldConfig.baseIncrement + Math.sqrt(i) * 0.01,
+      priceMultiplier: 1.01,
+      unlockAfter: i === 0 ? undefined : `${worldId}_loader${i}`,
+      colorClass: `loader${i + 1}`,
+      loaderCSS: `/* CSS for loader${i + 1} */\n.loader${i + 1} { /* ... */ }`,
+      showModal: false,
+    };
   }
 
   /** Buy spinner logic */
@@ -108,7 +225,7 @@ export class GameStateService {
     if (!sp) return;
 
     if (sp.unlockAfter) {
-      const prev = p.spinners.find(s => s.name === sp.unlockAfter);
+      const prev = p.spinners.find((s) => s.name === sp.unlockAfter);
       if (!prev || !prev.active) return;
     }
 
@@ -148,9 +265,15 @@ export class GameStateService {
 
   /** Update last visited world */
   setVisitedWorld(worldId: string) {
-    if (this.getUnlockedWorlds().includes(worldId)) {
-      this.lastVisitedWorld = worldId;
-      if (this.players[worldId]) this._player.next(this.players[worldId]);
+    // ensure world exists
+    if (!this.players[worldId]) {
+      this.initCurrentWorld(worldId);
+    }
+
+    this.lastVisitedWorld = worldId;
+
+    if (this.players[worldId]) {
+      this._player.next(this.players[worldId]);
     }
   }
 
@@ -196,7 +319,7 @@ export class GameStateService {
     const newSpinners = [...p.spinners];
     const newCurrencies = { ...p.currencies };
 
-    newSpinners.forEach(sp => {
+    newSpinners.forEach((sp) => {
       if (!sp.active) return;
       sp.timer -= deltaMs;
 
@@ -239,7 +362,7 @@ export class GameStateService {
     const newCurrencies = { ...this.player.currencies };
     newCurrencies[currency] -= amount;
 
-    WORLDS.forEach(w => this.unlockWorld(w.id));
+    WORLDS.forEach((w) => this.unlockWorld(w.id));
 
     this._hasAscended = true;
     this._player.next({ spinners: this.player.spinners, currencies: newCurrencies });
@@ -251,10 +374,10 @@ export class GameStateService {
 
   /** Return all unlocked worlds */
   getUnlockedWorlds(): string[] {
-    return WORLDS.map(w => w.id);
+    return WORLDS.map((w) => w.id);
   }
 
   unlockWorld(worldId: string) {
-    if (!WORLDS.find(w => w.id === worldId)) return;
+    if (!WORLDS.find((w) => w.id === worldId)) return;
   }
 }

@@ -4,6 +4,7 @@ import { SaveService } from '../../../../core/services/save';
 import { BaseWorld } from '../../base-world';
 import { GameStateService } from '../../../../core/state/game-state.service';
 import { CommonModule } from '@angular/common';
+import { SettingsService } from '../../../../core/services/settings';
 
 @Component({
   selector: 'app-continuous-world',
@@ -13,7 +14,12 @@ import { CommonModule } from '@angular/common';
 })
 export class ContinuousWorld extends BaseWorld {
   worldId = 'continuous';
-  constructor(gameState: GameStateService, save: SaveService, offline: OfflineService) {
-    super(gameState, save, offline);
+  constructor(
+    gameState: GameStateService,
+    save: SaveService,
+    offline: OfflineService,
+    settings: SettingsService
+  ) {
+    super(gameState, save, offline, settings);
   }
 }

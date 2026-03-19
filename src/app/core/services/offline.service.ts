@@ -30,12 +30,7 @@ export class OfflineService {
 
       // Restore last visited world
       const worldId = data.lastVisitedWorld || 'classic';
-      this.gameState.lastVisitedWorld = worldId;
-
-      // Set current _player to the last visited world
-      if (this.gameState.players[worldId]) {
-        this.gameState.loadPlayer(worldId, this.gameState.players[worldId]);
-      }
+      this.gameState.setVisitedWorld(worldId);
 
       // Restore ascend state
       if (data.hasAscended) (this.gameState as any)._hasAscended = data.hasAscended;
@@ -52,16 +47,20 @@ export class OfflineService {
 
   /** Apply offline rewards to current world */
   applyOfflineProgress(offlineMs: number) {
-    const player = this.gameState.player;
     const rewards: Record<string, number> = {};
 
-    player.spinners.forEach((sp) => {
-      if (!sp.active || sp.amount === 0) return;
-      const avgSpinTime = (sp.minTime + sp.maxTime) / 2;
-      const spins = Math.floor(offlineMs / avgSpinTime);
-      const coins = spins * this.gameState.spinnerGain(sp);
+    Object.values(this.gameState.players).forEach((player) => {
+      player.spinners.forEach((sp) => {
+        if (!sp.active || sp.amount === 0) return;
 
-      if (coins > 0) rewards[sp.currencyProduced] = (rewards[sp.currencyProduced] || 0) + coins;
+        const avgSpinTime = (sp.minTime + sp.maxTime) / 2;
+        const spins = Math.floor(offlineMs / avgSpinTime);
+        const coins = spins * this.gameState.spinnerGain(sp);
+
+        if (coins > 0) {
+          rewards[sp.currencyProduced] = (rewards[sp.currencyProduced] || 0) + coins;
+        }
+      });
     });
 
     if (Object.keys(rewards).length > 0) {

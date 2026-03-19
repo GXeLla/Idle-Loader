@@ -4,6 +4,7 @@ import { GameStateService } from '../../../../core/state/game-state.service';
 import { SaveService } from '../../../../core/services/save';
 import { OfflineService } from '../../../../core/services/offline.service';
 import { BaseWorld } from '../../base-world';
+import { SettingsService } from '../../../../core/services/settings';
 
 @Component({
   selector: 'app-polygons-world',
@@ -13,12 +14,12 @@ import { BaseWorld } from '../../base-world';
 })
 export class PolygonsWorld extends BaseWorld {
   worldId = 'polygons';
-
   constructor(
     gameState: GameStateService,
     save: SaveService,
-    offline: OfflineService
+    offline: OfflineService,
+    settings: SettingsService
   ) {
-    super(gameState, save, offline);
+    super(gameState, save, offline, settings);
   }
 }

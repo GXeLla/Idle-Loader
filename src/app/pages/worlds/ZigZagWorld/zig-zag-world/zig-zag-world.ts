@@ -4,6 +4,7 @@ import { BaseWorld } from '../../base-world';
 import { GameStateService } from '../../../../core/state/game-state.service';
 import { OfflineService } from '../../../../core/services/offline.service';
 import { SaveService } from '../../../../core/services/save';
+import { SettingsService } from '../../../../core/services/settings';
 
 @Component({
   selector: 'app-zig-zag-world',
@@ -13,7 +14,13 @@ import { SaveService } from '../../../../core/services/save';
 })
 export class ZigZagWorld extends BaseWorld {
   worldId = 'zig-zag';
-  constructor(gameState: GameStateService, save: SaveService, offline: OfflineService) {
-    super(gameState, save, offline);
+  constructor(
+    gameState: GameStateService,
+    save: SaveService,
+    offline: OfflineService,
+    settings: SettingsService
+  ) {
+    super(gameState, save, offline, settings);
   }
 }
+
