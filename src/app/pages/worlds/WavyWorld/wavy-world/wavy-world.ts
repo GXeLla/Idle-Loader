@@ -5,12 +5,14 @@ import { GameStateService } from '../../../../core/state/game-state.service';
 import { SaveService } from '../../../../core/services/save';
 import { OfflineService } from '../../../../core/services/offline.service';
 import { SettingsService } from '../../../../core/services/settings';
+import { CeilPipe } from '../../../../core/pipes/ceil.pipe';
 
 @Component({
   selector: 'app-wavy-world',
   standalone: true,
-  imports: [CommonModule],
-  template: `<h2>Wavy World</h2>`,
+  imports: [CommonModule, CeilPipe],
+  templateUrl: './wavy-world.html',
+  styleUrl: './wavy-world.scss',
 })
 export class WavyWorld extends BaseWorld {
   worldId = 'wavy';
@@ -18,7 +20,7 @@ export class WavyWorld extends BaseWorld {
     gameState: GameStateService,
     save: SaveService,
     offline: OfflineService,
-    settings: SettingsService
+    settings: SettingsService,
   ) {
     super(gameState, save, offline, settings);
   }

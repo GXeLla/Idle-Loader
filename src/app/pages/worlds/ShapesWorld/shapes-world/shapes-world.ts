@@ -5,12 +5,14 @@ import { SaveService } from '../../../../core/services/save';
 import { OfflineService } from '../../../../core/services/offline.service';
 import { BaseWorld } from '../../base-world';
 import { SettingsService } from '../../../../core/services/settings';
+import { CeilPipe } from '../../../../core/pipes/ceil.pipe';
 
 @Component({
   selector: 'app-shapes-world',
   standalone: true,
-  imports: [CommonModule],
-  template: `<h2>Shapes World</h2>`,
+  imports: [CommonModule,CeilPipe],
+  templateUrl: './shapes-world.html',
+  styleUrl: './shapes-world.scss'
 })
 export class ShapesWorld extends BaseWorld {
   worldId = 'shapes';
