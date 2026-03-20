@@ -5,12 +5,14 @@ import { GameStateService } from '../../../../core/state/game-state.service';
 import { BaseWorld } from '../../base-world';
 import { CommonModule } from '@angular/common';
 import { SettingsService } from '../../../../core/services/settings';
+import { CeilPipe } from '../../../../core/pipes/ceil.pipe';
 
 @Component({
   selector: 'app-growing-world',
   standalone: true,
-  imports: [CommonModule],
-  template: `<h2>Growing World</h2>`,
+  imports: [CommonModule, CeilPipe],
+  templateUrl: './growing-world.html',
+  styleUrl: './growing-world.scss',
 })
 export class GrowingWorld extends BaseWorld {
   worldId = 'growing';
@@ -18,7 +20,7 @@ export class GrowingWorld extends BaseWorld {
     gameState: GameStateService,
     save: SaveService,
     offline: OfflineService,
-    settings: SettingsService
+    settings: SettingsService,
   ) {
     super(gameState, save, offline, settings);
   }

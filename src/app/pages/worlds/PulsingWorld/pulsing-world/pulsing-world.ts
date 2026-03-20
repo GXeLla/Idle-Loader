@@ -5,12 +5,14 @@ import { SaveService } from '../../../../core/services/save';
 import { BaseWorld } from '../../base-world';
 import { CommonModule } from '@angular/common';
 import { SettingsService } from '../../../../core/services/settings';
+import { CeilPipe } from '../../../../core/pipes/ceil.pipe';
 
 @Component({
   selector: 'app-pulsing-world',
   standalone: true,
-  imports: [CommonModule],
-  template: `<h2>Pulsing World</h2>`,
+  imports: [CommonModule, CeilPipe],
+  templateUrl: './pulsing-world.html',
+  styleUrl: './pulsing-world.scss',
 })
 export class PulsingWorld extends BaseWorld {
   worldId = 'pulsing';
@@ -18,7 +20,7 @@ export class PulsingWorld extends BaseWorld {
     gameState: GameStateService,
     save: SaveService,
     offline: OfflineService,
-    settings: SettingsService
+    settings: SettingsService,
   ) {
     super(gameState, save, offline, settings);
   }

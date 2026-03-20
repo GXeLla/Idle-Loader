@@ -5,12 +5,14 @@ import { BaseWorld } from '../../base-world';
 import { GameStateService } from '../../../../core/state/game-state.service';
 import { SaveService } from '../../../../core/services/save';
 import { SettingsService } from '../../../../core/services/settings';
+import { CeilPipe } from '../../../../core/pipes/ceil.pipe';
 
 @Component({
   selector: 'app-flipping-world',
   standalone: true,
-  imports: [CommonModule],
-  template: `<h2>Flipping World</h2>`,
+  imports: [CommonModule, CeilPipe],
+  templateUrl: './flipping-world.html',
+  styleUrl: './flipping-world.scss',
 })
 export class FlippingWorld extends BaseWorld {
   worldId = 'flipping';
@@ -18,9 +20,8 @@ export class FlippingWorld extends BaseWorld {
     gameState: GameStateService,
     save: SaveService,
     offline: OfflineService,
-    settings: SettingsService
+    settings: SettingsService,
   ) {
     super(gameState, save, offline, settings);
   }
 }
-

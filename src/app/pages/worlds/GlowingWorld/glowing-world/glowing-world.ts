@@ -5,12 +5,14 @@ import { GameStateService } from '../../../../core/state/game-state.service';
 import { BaseWorld } from '../../base-world';
 import { CommonModule } from '@angular/common';
 import { SettingsService } from '../../../../core/services/settings';
+import { CeilPipe } from '../../../../core/pipes/ceil.pipe';
 
 @Component({
   selector: 'app-glowing-world',
   standalone: true,
-  imports: [CommonModule],
-  template: `<h2>Glowing World</h2>`,
+  imports: [CommonModule,CeilPipe],
+  templateUrl: './glowing-world.html',
+  styleUrl:'./glowing-world.scss'
 })
 export class GlowingWorld extends BaseWorld {
   worldId = 'glowing';
