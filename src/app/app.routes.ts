@@ -106,5 +106,4 @@ export const routes: Routes = [
   // Fallback
   { path: '**', redirectTo: 'ClassicWorld' },
 ];
-//for 1 m coins in classic world
-// Object.keys(JSON.parse(localStorage.getItem('idle_clicker_save')).players.classic.currencies).forEach(k => { let s = JSON.parse(localStorage.getItem('idle_clicker_save')); s.players.classic.currencies[k] = 1000000; localStorage.setItem('idle_clicker_save', JSON.stringify(s)); location.reload(); });
+

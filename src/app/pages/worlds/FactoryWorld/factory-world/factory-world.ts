@@ -5,12 +5,14 @@ import { SaveService } from '../../../../core/services/save';
 import { GameStateService } from '../../../../core/state/game-state.service';
 import { BaseWorld } from '../../base-world';
 import { SettingsService } from '../../../../core/services/settings';
+import { CeilPipe } from '../../../../core/pipes/ceil.pipe';
 
 @Component({
   selector: 'app-factory-world',
   standalone: true,
-  imports: [CommonModule],
-  template: `<h2>Factory World</h2>`,
+  imports: [CommonModule, CeilPipe],
+  templateUrl: './factory-world.html',
+  styleUrl: './factory-world.scss',
 })
 export class FactoryWorld extends BaseWorld {
   worldId = 'factory';
@@ -18,7 +20,7 @@ export class FactoryWorld extends BaseWorld {
     gameState: GameStateService,
     save: SaveService,
     offline: OfflineService,
-    settings: SettingsService
+    settings: SettingsService,
   ) {
     super(gameState, save, offline, settings);
   }

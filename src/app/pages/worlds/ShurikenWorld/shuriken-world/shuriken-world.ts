@@ -5,12 +5,14 @@ import { SaveService } from '../../../../core/services/save';
 import { GameStateService } from '../../../../core/state/game-state.service';
 import { BaseWorld } from '../../base-world';
 import { SettingsService } from '../../../../core/services/settings';
+import { CeilPipe } from '../../../../core/pipes/ceil.pipe';
 
 @Component({
   selector: 'app-shuriken-world',
   standalone: true,
-  imports: [CommonModule],
-  template: `<h2>Shuriken World</h2>`,
+  imports: [CommonModule,CeilPipe],
+  templateUrl:'./shuriken-world.html',
+  styleUrl:'./shuriken-world.scss'
 })
 export class ShurikenWorld extends BaseWorld {
   worldId = 'shuriken';

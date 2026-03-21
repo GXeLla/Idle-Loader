@@ -7,9 +7,9 @@
   </div>
 
   <!-- MIDDLE: Loader + Timer -->
-  <div class="spinner-middle" *ngIf="sp.active">
+  <div class="spinner-middle" *ngIf="sp.active" (click)="sp.showModal = true">
     <!-- Loader clickable to open modal -->
-    <div [class]="loadingScreens[i]" (click)="sp.showModal = true"></div>
+    <div [class]="loadingScreens[i]" ></div>
 
     <p>Next coin in: {{ sp.timer / 1000 | ceil }}s</p>
   </div>

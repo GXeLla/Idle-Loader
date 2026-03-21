@@ -7,8 +7,6 @@
   display: none !important;
 }
 
-
-
 /* Full-screen modal backdrop */
 .modal {
   position: fixed;
@@ -16,17 +14,17 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0,0,0,0.6); // semi-transparent black
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; // on top of everything
+  z-index: 1000;
   overflow: hidden;
 }
 
 /* Modal inner content box */
 .modal-content {
-  background-color: #1e1e1e; // dark modal background
+  background-color: #1e1e1e;
   color: white;
   padding: 20px;
   border-radius: 12px;
@@ -80,9 +78,7 @@
   margin-bottom: 16px;
 }
 
-
 //=======================================================================================
-
 .spinner-box {
   display: flex;
   align-items: center;
@@ -107,6 +103,9 @@
   gap: 5px;
   min-width: 120px;
   text-align: center;
+  &:hover {
+    background: #ffffff0b;
+  }
 }
 
 .spinner-right {

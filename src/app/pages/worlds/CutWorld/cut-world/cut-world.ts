@@ -5,12 +5,14 @@ import { SaveService } from '../../../../core/services/save';
 import { GameStateService } from '../../../../core/state/game-state.service';
 import { BaseWorld } from '../../base-world';
 import { SettingsService } from '../../../../core/services/settings';
+import { CeilPipe } from '../../../../core/pipes/ceil.pipe';
 
 @Component({
   selector: 'app-cut-world',
   standalone: true,
-  imports: [CommonModule],
-  template: `<h2>Cut World</h2>`,
+  imports: [CommonModule, CeilPipe],
+  templateUrl: './cut-world.html',
+  styleUrl: './cut-world.scss',
 })
 export class CutWorld extends BaseWorld {
   worldId = 'cut';
@@ -18,9 +20,8 @@ export class CutWorld extends BaseWorld {
     gameState: GameStateService,
     save: SaveService,
     offline: OfflineService,
-    settings: SettingsService
+    settings: SettingsService,
   ) {
     super(gameState, save, offline, settings);
   }
 }
-
