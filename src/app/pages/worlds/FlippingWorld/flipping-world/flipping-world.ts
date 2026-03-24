@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, RendererFactory2 } from '@angular/core';
 import { OfflineService } from '../../../../core/services/offline.service';
 import { CommonModule } from '@angular/common';
 import { BaseWorld } from '../../base-world';
@@ -21,7 +21,8 @@ export class FlippingWorld extends BaseWorld {
     save: SaveService,
     offline: OfflineService,
     settings: SettingsService,
+    rendererFactory: RendererFactory2
   ) {
-    super(gameState, save, offline, settings);
+    super(gameState, save, offline, settings, rendererFactory);
   }
 }

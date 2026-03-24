@@ -41,7 +41,7 @@
             <p>{{ conversionRate }} {{ getCostCurrency(i) }} → 1 {{ getGainCurrency(i) }}</p>
           </div>
           <div class="shop-right">
-            <button (click)="convertCurrency(i)" [disabled]="!canConvert(i)">
+            <button (click)="convertCurrency(i)" [disabled]="!canConvert(i)" class="btn">
               {{ getButtonText(i) }}
             </button>
           </div>

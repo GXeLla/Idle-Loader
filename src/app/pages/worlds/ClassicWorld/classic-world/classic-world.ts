@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, RendererFactory2 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CeilPipe } from '../../../../core/pipes/ceil.pipe';
 import { GameStateService } from '../../../../core/state/game-state.service';
@@ -21,8 +21,9 @@ export class ClassicWorld extends BaseWorld {
     gameState: GameStateService,
     save: SaveService,
     offline: OfflineService,
-    settings: SettingsService
+    settings: SettingsService,
+    rendererFactory: RendererFactory2 
   ) {
-    super(gameState, save, offline, settings);
+    super(gameState, save, offline, settings, rendererFactory);
   }
 }

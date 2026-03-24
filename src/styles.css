@@ -1,0 +1,151 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+router-outlet + * {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.animations-disabled [class^=loader] {
+  display: none !important;
+}
+
+/* Full-screen modal backdrop */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+/* Modal inner content box */
+.modal-content {
+  background-color: #1e1e1e;
+  color: white;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 90%;
+  max-height: 80%;
+  overflow-y: auto;
+  position: relative;
+  font-family: monospace;
+}
+
+/* Close button */
+.modal-content .close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #fff;
+  transition: color 0.2s;
+}
+
+.modal-content .close:hover {
+  color: #ff5555;
+}
+
+/* Copy button */
+.copy-btn {
+  margin-top: 12px;
+  padding: 6px 12px;
+  background-color: #444;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.copy-btn:hover {
+  background-color: #666;
+}
+
+/* Copied visual effect */
+.copy-btn.copied {
+  background-color: #28a745 !important;
+  color: #fff !important;
+}
+
+.world-title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.spinner-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #222;
+  padding: 10px;
+  border-radius: 6px;
+  gap: 15px;
+}
+
+.spinner-left {
+  flex: 1;
+  font-weight: bold;
+  color: #fff;
+}
+
+.spinner-middle {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  min-width: 120px;
+  text-align: center;
+}
+.spinner-middle:hover {
+  background: rgba(255, 255, 255, 0.0431372549);
+}
+
+.spinner-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.spinner-right button {
+  width: 100%;
+  padding: 10px 14px;
+  margin-top: 10px;
+  background: linear-gradient(75deg, #ffb74d, #ff9800);
+  color: #fffbeb;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+.spinner-right button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 7px rgba(255, 152, 0, 0.4);
+}
+.spinner-right button:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+.spinner-right button:disabled {
+  background: #555;
+  color: #aaa;
+  cursor: not-allowed;
+  box-shadow: none;
+}/*# sourceMappingURL=styles.css.map */

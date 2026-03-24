@@ -1,21 +1,42 @@
-import { OnInit, Injectable } from '@angular/core';
-import { GameStateService } from '../../core/state/game-state.service';
+import {
+  OnInit,
+  Injectable,
+  Renderer2,
+  RendererFactory2,
+  AfterViewInit,
+  OnDestroy,
+  ElementRef,
+  ViewChildren,
+  QueryList,
+} from '@angular/core';
+import { GameStateService, Spinner } from '../../core/state/game-state.service';
 import { SaveService } from '../../core/services/save';
 import { OfflineService } from '../../core/services/offline.service';
 import { SettingsService } from '../../core/services/settings';
 import { SPINNER_CSS } from '../../shared/components/Style-popup-modal/spinner-css';
+import { CURRENCY_COLORS, WorldConfig, WORLDS } from '../../core/config/worlds.config';
 
 @Injectable()
-export abstract class BaseWorld implements OnInit {
+export abstract class BaseWorld implements OnInit, AfterViewInit, OnDestroy {
   abstract worldId: string;
   loadingScreens: string[] = [];
+
+  // ---------------- Dynamic content properties ----------------
+  private renderer!: Renderer2;
+  private intervalId: any;
+  private worldConfig!: WorldConfig;
+
+  @ViewChildren('spinnerLeft', { read: ElementRef }) spinnerEls!: QueryList<ElementRef>;
 
   constructor(
     public gameState: GameStateService,
     private save: SaveService,
     private offline: OfflineService,
     public settings: SettingsService,
-  ) {}
+    rendererFactory: RendererFactory2,
+  ) {
+    this.renderer = rendererFactory.createRenderer(null, null);
+  }
 
   ngOnInit() {
     // 1️⃣ Load save first
@@ -39,6 +60,17 @@ export abstract class BaseWorld implements OnInit {
 
     // 5️⃣ Save
     this.save.saveGame();
+  }
+
+  ngAfterViewInit() {
+    this.worldConfig = WORLDS.find((w) => w.id === this.worldId)!;
+
+    const spinnerElements = document.querySelectorAll<HTMLElement>('.spinner-left');
+
+    spinnerElements.forEach((el, index) => {
+      const sp = this.gameState.player.spinners[index];
+      if (sp) this.startFallingAnimation(el, sp);
+    });
   }
 
   buyMax(index: number) {
@@ -95,5 +127,61 @@ export abstract class BaseWorld implements OnInit {
         btn.classList.remove('copied');
       }, 700);
     });
+  }
+
+  private intervals = new Map<HTMLElement, any>();
+
+  private startFallingAnimation(el: HTMLElement, sp: Spinner) {
+  if (this.intervals.has(el)) return;
+
+  const MAX_SYMBOLS = 3; // max simultaneous spans
+  const interval = setInterval(() => {
+    if (!this.settings.animationsEnabled) return; // stop if animations disabled
+
+    // Count current falling symbols
+    const currentSpans = el.querySelectorAll('span').length;
+    if (currentSpans >= MAX_SYMBOLS) return;
+
+    const span = this.renderer.createElement('span');
+    span.innerHTML = this.worldConfig.symbol || '*';
+
+    // Extract base currency for color
+    let baseCurrency = (sp.currencyProduced || '').toLowerCase();
+    if (baseCurrency.includes('_')) {
+      baseCurrency = baseCurrency.split('_')[1];
+    }
+    const color = CURRENCY_COLORS[baseCurrency] || '#ffffff';
+    this.renderer.setStyle(span, 'color', color);
+
+    // Random font size
+    const fontSize = Math.random() * 10 + 12;
+    this.renderer.setStyle(span, 'fontSize', `${fontSize}px`);
+
+    // Initial styles
+    this.renderer.setStyle(span, 'position', 'absolute');
+    this.renderer.setStyle(span, 'left', `${Math.random() * 100}%`);
+    this.renderer.setStyle(span, 'top', '-20px');
+    this.renderer.setStyle(span, 'pointerEvents', 'none');
+    this.renderer.setStyle(span, 'userSelect', 'none');
+
+    const duration = Math.random() * 5 + 5; // fall takes 5–10s
+    this.renderer.setStyle(span, 'transition', `top ${duration}s linear`);
+
+    this.renderer.appendChild(el, span);
+    span.getBoundingClientRect(); // force reflow
+
+    setTimeout(() => this.renderer.setStyle(span, 'top', '100%'), 50);
+    setTimeout(() => {
+      if (el.contains(span)) this.renderer.removeChild(el, span);
+    }, (duration + 0.2) * 1000);
+
+  }, 1000); // spawn every 1s
+
+  this.intervals.set(el, interval);
+}
+
+  ngOnDestroy() {
+    this.intervals.forEach((interval) => clearInterval(interval));
+    this.intervals.clear();
   }
 }

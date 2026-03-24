@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, RendererFactory2 } from '@angular/core';
 import { BaseWorld } from '../../base-world';
 import { GameStateService } from '../../../../core/state/game-state.service';
 import { SaveService } from '../../../../core/services/save';
@@ -21,7 +21,8 @@ export class InfinityWorld extends BaseWorld {
     save: SaveService,
     offline: OfflineService,
     settings: SettingsService,
+    rendererFactory: RendererFactory2
   ) {
-    super(gameState, save, offline, settings);
+    super(gameState, save, offline, settings, rendererFactory);
   }
 }

@@ -2,9 +2,9 @@
 
 <div *ngFor="let sp of gameState.player.spinners; index as i" class="spinner-box">
   <!-- LEFT: Spinner name -->
-  <div class="spinner-left">
-    <p>{{ sp.currencyProduced | titlecase }}</p>
-  </div>
+<div class="spinner-left" #spinnerLeft>
+  <p>{{ sp.currencyProduced | titlecase }}</p>
+</div>
 
   <!-- MIDDLE: Loader + Timer -->
   <div class="spinner-middle" *ngIf="sp.active" (click)="sp.showModal = true">
