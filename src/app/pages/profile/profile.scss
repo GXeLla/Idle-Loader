@@ -8,15 +8,20 @@
 
 /* Tabs */
 .world-tabs {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, auto));
   gap: 10px;
+  max-height: 45vh;
+  overflow-y: auto;
+
   button {
-    padding: 6px 12px;
+    padding: 10px;
     border-radius: 4px;
     background-color: #444;
     color: white;
     border: none;
     cursor: pointer;
+    font-size: 15px;
 
     &.active {
       background-color: #ffb700;
@@ -30,7 +35,6 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  width: 80vw;
 
   .completion-bar {
     flex: 1;

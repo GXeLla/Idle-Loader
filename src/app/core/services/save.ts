@@ -53,41 +53,45 @@ export class SaveService {
 giveCheatCoins() {
   console.log('--- Cheat Coins Triggered ---');
 
-  // Load save or create fresh
+  // ✅ SAVE CURRENT WORLD
+  const currentWorld = this.gameState.lastVisitedWorld;
+
   const saveRaw = localStorage.getItem(this.STORAGE_KEY);
   const save = saveRaw ? JSON.parse(saveRaw) : { players: {} };
 
   WORLDS.forEach(world => {
     const worldId = world.id;
 
-    // Ensure save object exists
     if (!save.players[worldId]) save.players[worldId] = { currencies: {} };
     const savedPlayer = save.players[worldId];
     if (!savedPlayer.currencies) savedPlayer.currencies = {};
 
-    // Ensure in-memory player exists
-    if (!this.gameState.players[worldId]) this.gameState.initCurrentWorld(worldId);
+    // ⚠️ IMPORTANT: do NOT switch world context
+    if (!this.gameState.players[worldId]) {
+      this.gameState.initCurrentWorld(worldId);
+
+      // 🔥 IMMEDIATELY RESTORE
+      this.gameState.lastVisitedWorld = currentWorld;
+    }
+
     const player = this.gameState.players[worldId];
     if (!player.currencies) player.currencies = {};
 
-    // Add +10 to **namespaced keys**
     world.currencies.forEach(currency => {
       const key = `${worldId}_${currency}`;
-      const oldSave = savedPlayer.currencies[key] || 0;
-      savedPlayer.currencies[key] = oldSave + 10;
 
-      const oldMem = player.currencies[key] || 0;
-      player.currencies[key] = oldMem + 10;
-
-      console.log(
-        `World ${worldId} | ${currency}: Save ${oldSave} → ${savedPlayer.currencies[key]}, In-memory ${oldMem} → ${player.currencies[key]}`
-      );
+      savedPlayer.currencies[key] = (savedPlayer.currencies[key] || 0) + 10;
+      player.currencies[key] = (player.currencies[key] || 0) + 10;
     });
   });
 
-  // Persist to localStorage
+  // ✅ RESTORE AGAIN (final safety)
+  if (currentWorld) {
+    this.gameState.setVisitedWorld(currentWorld);
+  }
+
   localStorage.setItem(this.STORAGE_KEY, JSON.stringify(save));
-  console.log('✅ Cheat coins applied to all worlds and currencies.');
+  console.log('✅ Cheat coins applied without changing world.');
 }
 
   resetProgress() {

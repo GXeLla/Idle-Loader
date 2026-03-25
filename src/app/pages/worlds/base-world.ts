@@ -98,15 +98,28 @@ export abstract class BaseWorld implements OnInit, AfterViewInit, OnDestroy {
     return qty;
   }
 
-  getCostText(index: number): string {
-    const sp = this.gameState.player.spinners[index];
-    if (!sp) return 'N/A';
-    const maxQty = this.getMaxQty(index);
-    const totalCost = this.gameState.getSpinnerCost(index, maxQty);
-    if (maxQty === 0) return 'Cannot afford';
-    return `${maxQty}x → ${totalCost} ${sp.costCurrency}`;
+getCostText(index: number): string {
+  const sp = this.gameState.player.spinners[index];
+  if (!sp) return 'N/A';
+
+  // 🔒 FIRST: check unlock condition
+  if (sp.unlockAfter) {
+    const prev = this.gameState.player.spinners.find(
+      (s) => s.name === sp.unlockAfter
+    );
+
+    if (!prev || !prev.active) {
+      return 'Previous not unlocked';
+    }
   }
 
+  // 💰 THEN: check affordability
+  const maxQty = this.getMaxQty(index);
+  if (maxQty === 0) return 'Cannot afford';
+
+  const totalCost = this.gameState.getSpinnerCost(index, maxQty);
+  return `${maxQty}x → ${totalCost} ${sp.costCurrency}`;
+}
   getLoaderHtml(i: number): string {
     return `<div class="loader${i + 1}"></div>`;
   }
