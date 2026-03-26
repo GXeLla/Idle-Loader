@@ -68,3 +68,77 @@
 .setting-item input:checked + label::after {
   transform: translateX(24px);
 }
+
+.settings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 250px;
+}
+
+button {
+  padding: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(20, 20, 20, 0.55);
+  color: #ddd;
+  transition: all 0.2s ease;
+  min-width: 125px;
+  padding: 10px 20px;
+
+  &:hover {
+    background: rgba(30, 30, 30, 0.7);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: scale(0.96);
+  }
+}
+
+/* ⚡ CHEAT BUTTON */
+.cheat-btn {
+  border: 1px solid rgba(255, 140, 0, 0.25);
+  background: linear-gradient(135deg, rgba(60, 35, 10, 0.6), rgba(120, 60, 10, 0.5));
+
+  &.flash {
+    color: #ffcc80;
+    border-color: rgba(255, 140, 0, 0.7);
+    box-shadow:
+      0 0 12px rgba(255, 140, 0, 0.7),
+      0 0 25px rgba(255, 140, 0, 0.5);
+    animation: pulseGlow 1.2s ease-in-out;
+  }
+}
+
+/* 💀 RESET BUTTON */
+.reset-btn {
+  border: 1px solid rgba(150, 40, 40, 0.3);
+  background: linear-gradient(135deg, rgba(40, 10, 10, 0.6), rgba(80, 10, 10, 0.5));
+
+  &:hover {
+    border-color: rgba(255, 80, 80, 0.6);
+    color: #ff9999;
+    box-shadow:
+      0 0 10px rgba(255, 50, 50, 0.4),
+      0 0 18px rgba(255, 50, 50, 0.25);
+  }
+}
+
+/* 🔥 Pulse (now visible) */
+@keyframes pulseGlow {
+  0% {
+    box-shadow: 0 0 6px rgba(255, 140, 0, 0.3);
+  }
+  50% {
+    box-shadow:
+      0 0 20px rgba(255, 140, 0, 0.9),
+      0 0 35px rgba(255, 140, 0, 0.6);
+  }
+  100% {
+    box-shadow: 0 0 6px rgba(255, 140, 0, 0.3);
+  }
+}

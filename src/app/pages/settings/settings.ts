@@ -11,14 +11,30 @@ import { SaveService } from '../../core/services/save';
   styleUrls: ['./settings.scss'],
 })
 export class SettingsComponent {
+  cheatMode = false;
   constructor(
     public settings: SettingsService,
     private save: SaveService,
   ) {}
 
+  cheatText = 'Cheat Mode';
+  cheatActive = false;
   /** Give all worlds 10 coins */
   cheatCoins() {
+    // prevent spam while active
+    if (this.cheatActive) return;
+
+    this.cheatActive = true;
+    this.cheatText = '+10';
+
+    // your game logic
     this.save.giveCheatCoins();
+
+  // remove flash after 1s
+  setTimeout(() => {
+    this.cheatActive = false;
+    this.cheatText = 'Cheat Mode';
+  }, 1000);
   }
 
   /** Reset all progress */

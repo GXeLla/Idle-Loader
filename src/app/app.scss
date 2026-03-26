@@ -24,6 +24,7 @@
   background-color: #1a1a1a;
   padding: 15px;
   border-radius: 8px;
+  width: 100%;
 }
 
 .sidebar {
@@ -31,4 +32,8 @@
   background-color: #222;
   padding: 15px;
   border-radius: 8px;
+
+  @media (max-width: 950px) {
+    display: none;
+  }
 }

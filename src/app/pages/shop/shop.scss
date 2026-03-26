@@ -28,6 +28,10 @@
 .shop-left {
   flex: 1;
   font-size: 16px;
+
+  @media (max-width: 576px) {
+    display: none;
+  }
 }
 
 .shop-middle {

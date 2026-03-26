@@ -103,6 +103,12 @@ router-outlet + * {
   align-content: center;
   position: relative;
   overflow: hidden;
+
+  @media (max-width:576px) {
+p{
+  display: none;
+}
+  }
 }
 
 .spinner-middle {

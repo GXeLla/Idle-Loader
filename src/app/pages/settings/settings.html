@@ -14,10 +14,10 @@
   </div>
 
   <div class="setting-item">
-    <button (click)="cheatCoins()">CheatMode</button>
+    <button (click)="cheatCoins()" class="cheat-btn" [class.flash]="cheatActive">{{ cheatText }}</button>
   </div>
 
   <div class="setting-item">
-    <button (click)="resetProgress()">Reset Progress</button>
+    <button (click)="resetProgress()" class="reset-btn">Reset Progress</button>
   </div>
 </div>

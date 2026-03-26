@@ -18,10 +18,18 @@
       color: #ff9800;
     }
   }
+
+  @media (max-width: 576px) {
+    font-size: 15px;
+  }
 }
 
 .navbar-left h1 {
   margin: 0;
   font-size: 1.5rem;
   cursor: pointer;
+
+  @media (max-width: 576px) {
+    width: 76px;
+  }
 }
