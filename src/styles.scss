@@ -39,6 +39,30 @@ router-outlet + * {
   overflow-y: auto;
   position: relative;
   font-family: monospace;
+
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: #ffb700 #2c2c2c;
+
+  /* Chrome, Edge, Safari */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #2c2c2c; // dark track
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #ffb700, #ff8c00);
+    border-radius: 10px;
+    transition: background 0.2s ease;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #ffb700;
+  }
 }
 
 /* Close button */
@@ -82,6 +106,7 @@ router-outlet + * {
   font-size: 28px;
   font-weight: bold;
   margin-bottom: 16px;
+  text-shadow: 0 0 8px currentColor;
 }
 
 //=======================================================================================
@@ -104,10 +129,10 @@ router-outlet + * {
   position: relative;
   overflow: hidden;
 
-  @media (max-width:576px) {
-p{
-  display: none;
-}
+  @media (max-width: 576px) {
+    p {
+      display: none;
+    }
   }
 }
 

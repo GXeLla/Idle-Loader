@@ -26,6 +26,10 @@ export abstract class BaseWorld implements OnInit, AfterViewInit, OnDestroy {
   private intervalId: any;
   private worldConfig!: WorldConfig;
 
+
+  // Store colors by text content
+  private elementColorMap: Map<string, string> = new Map();
+
   @ViewChildren('spinnerLeft', { read: ElementRef }) spinnerEls!: QueryList<ElementRef>;
 
   constructor(
@@ -63,6 +67,7 @@ export abstract class BaseWorld implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
+    this.setRandomColors();
     this.worldConfig = WORLDS.find((w) => w.id === this.worldId)!;
 
     const spinnerElements = document.querySelectorAll<HTMLElement>('.spinner-left');
@@ -78,6 +83,7 @@ export abstract class BaseWorld implements OnInit, AfterViewInit, OnDestroy {
     if (maxQty > 0) {
       this.gameState.buySpinner(index, maxQty);
       this.save.saveGame();
+      window.location.reload();
     }
   }
 
@@ -98,28 +104,26 @@ export abstract class BaseWorld implements OnInit, AfterViewInit, OnDestroy {
     return qty;
   }
 
-getCostText(index: number): string {
-  const sp = this.gameState.player.spinners[index];
-  if (!sp) return 'N/A';
+  getCostText(index: number): string {
+    const sp = this.gameState.player.spinners[index];
+    if (!sp) return 'N/A';
 
-  // 🔒 FIRST: check unlock condition
-  if (sp.unlockAfter) {
-    const prev = this.gameState.player.spinners.find(
-      (s) => s.name === sp.unlockAfter
-    );
+    // 🔒 FIRST: check unlock condition
+    if (sp.unlockAfter) {
+      const prev = this.gameState.player.spinners.find((s) => s.name === sp.unlockAfter);
 
-    if (!prev || !prev.active) {
-      return 'Previous not unlocked';
+      if (!prev || !prev.active) {
+        return 'Previous not unlocked';
+      }
     }
+
+    // 💰 THEN: check affordability
+    const maxQty = this.getMaxQty(index);
+    if (maxQty === 0) return 'Cannot afford';
+
+    const totalCost = this.gameState.getSpinnerCost(index, maxQty);
+    return `${maxQty}x → ${totalCost} ${sp.costCurrency}`;
   }
-
-  // 💰 THEN: check affordability
-  const maxQty = this.getMaxQty(index);
-  if (maxQty === 0) return 'Cannot afford';
-
-  const totalCost = this.gameState.getSpinnerCost(index, maxQty);
-  return `${maxQty}x → ${totalCost} ${sp.costCurrency}`;
-}
   getLoaderHtml(i: number): string {
     return `<div class="loader${i + 1}"></div>`;
   }
@@ -145,56 +149,110 @@ getCostText(index: number): string {
   private intervals = new Map<HTMLElement, any>();
 
   private startFallingAnimation(el: HTMLElement, sp: Spinner) {
-  if (this.intervals.has(el)) return;
+    if (this.intervals.has(el)) return;
 
-  const MAX_SYMBOLS = 3; // max simultaneous spans
-  const interval = setInterval(() => {
-    if (!this.settings.animationsEnabled) return; // stop if animations disabled
+    const MAX_SYMBOLS = 3; // max simultaneous spans
+    const interval = setInterval(() => {
+      if (!this.settings.animationsEnabled) return; // stop if animations disabled
 
-    // Count current falling symbols
-    const currentSpans = el.querySelectorAll('span').length;
-    if (currentSpans >= MAX_SYMBOLS) return;
+      // Count current falling symbols
+      const currentSpans = el.querySelectorAll('span').length;
+      if (currentSpans >= MAX_SYMBOLS) return;
 
-    const span = this.renderer.createElement('span');
-    span.innerHTML = this.worldConfig.symbol || '*';
+      const span = this.renderer.createElement('span');
+      span.innerHTML = this.worldConfig.symbol || '*';
 
-    // Extract base currency for color
-    let baseCurrency = (sp.currencyProduced || '').toLowerCase();
-    if (baseCurrency.includes('_')) {
-      baseCurrency = baseCurrency.split('_')[1];
-    }
-    const color = CURRENCY_COLORS[baseCurrency] || '#ffffff';
-    this.renderer.setStyle(span, 'color', color);
+      // Extract base currency for color
+      let baseCurrency = (sp.currencyProduced || '').toLowerCase();
+      if (baseCurrency.includes('_')) {
+        baseCurrency = baseCurrency.split('_')[1];
+      }
+      const color = CURRENCY_COLORS[baseCurrency] || '#ffffff';
+      this.renderer.setStyle(span, 'color', color);
 
-    // Random font size
-    const fontSize = Math.random() * 10 + 12;
-    this.renderer.setStyle(span, 'fontSize', `${fontSize}px`);
+      // Random font size
+      const fontSize = Math.random() * 10 + 12;
+      this.renderer.setStyle(span, 'fontSize', `${fontSize}px`);
 
-    // Initial styles
-    this.renderer.setStyle(span, 'position', 'absolute');
-    this.renderer.setStyle(span, 'left', `${Math.random() * 100}%`);
-    this.renderer.setStyle(span, 'top', '-20px');
-    this.renderer.setStyle(span, 'pointerEvents', 'none');
-    this.renderer.setStyle(span, 'userSelect', 'none');
+      // Initial styles
+      this.renderer.setStyle(span, 'position', 'absolute');
+      this.renderer.setStyle(span, 'left', `${Math.random() * 100}%`);
+      this.renderer.setStyle(span, 'top', '-20px');
+      this.renderer.setStyle(span, 'pointerEvents', 'none');
+      this.renderer.setStyle(span, 'userSelect', 'none');
 
-    const duration = Math.random() * 5 + 5; // fall takes 5–10s
-    this.renderer.setStyle(span, 'transition', `top ${duration}s linear`);
+      const duration = Math.random() * 5 + 5; // fall takes 5–10s
+      this.renderer.setStyle(span, 'transition', `top ${duration}s linear`);
 
-    this.renderer.appendChild(el, span);
-    span.getBoundingClientRect(); // force reflow
+      this.renderer.appendChild(el, span);
+      span.getBoundingClientRect(); // force reflow
 
-    setTimeout(() => this.renderer.setStyle(span, 'top', '100%'), 50);
-    setTimeout(() => {
-      if (el.contains(span)) this.renderer.removeChild(el, span);
-    }, (duration + 0.2) * 1000);
+      setTimeout(() => this.renderer.setStyle(span, 'top', '100%'), 50);
+      setTimeout(
+        () => {
+          if (el.contains(span)) this.renderer.removeChild(el, span);
+        },
+        (duration + 0.2) * 1000,
+      );
+    }, 1000); // spawn every 1s
 
-  }, 1000); // spawn every 1s
-
-  this.intervals.set(el, interval);
-}
+    this.intervals.set(el, interval);
+  }
 
   ngOnDestroy() {
     this.intervals.forEach((interval) => clearInterval(interval));
     this.intervals.clear();
   }
+
+setRandomColors() {
+  // --- World titles ---
+  const titleElements = document.querySelectorAll('.world-title');
+  titleElements.forEach((el) => {
+    const name = (el.textContent?.trim() || '').toLowerCase().replace(/\s+/g, '_');
+
+    // random muted/gold/blue
+    let r = 0, g = 0, b = 0;
+    const hueType = Math.floor(Math.random() * 3);
+    switch (hueType) {
+      case 0: r = 150 + Math.floor(Math.random()*60); g = 100 + Math.floor(Math.random()*60); b = 50 + Math.floor(Math.random()*50); break;
+      case 1: r = 50 + Math.floor(Math.random()*50); g = 80 + Math.floor(Math.random()*50); b = 130 + Math.floor(Math.random()*60); break;
+      case 2: r = 180 + Math.floor(Math.random()*40); g = 160 + Math.floor(Math.random()*40); b = 100 + Math.floor(Math.random()*30); break;
+    }
+    const color = `rgba(${r},${g},${b},1)`;
+    (el as HTMLElement).style.color = color;
+
+    // Store in map
+    this.elementColorMap.set(name, color);
+  });
+
+  // --- Spinner-box ---
+ const spinnerElements = document.querySelectorAll('.spinner-box');
+spinnerElements.forEach((el) => {
+  // pick the spinner name from the .spinner-left p inside
+  const leftP = el.querySelector('.spinner-left p');
+  if (!leftP) return;
+
+  const name = (leftP.textContent?.trim() || '').toLowerCase().replace(/\s+/g, '_');
+
+  // Pick a random color (golden/muted)
+  const r = 220 + Math.floor(Math.random() * 35);
+  const g = 170 + Math.floor(Math.random() * 30);
+  const b = 80 + Math.floor(Math.random() * 40);
+  const textColor = `rgba(${r},${g},${b},1)`;
+
+  // Apply the color to the whole spinner-box
+  (el as HTMLElement).style.color = textColor;
+
+  // Optionally set a background too
+  const bgBase = 30 + Math.floor(Math.random() * 50);
+  (el as HTMLElement).style.backgroundColor = `rgba(${bgBase},${bgBase},${bgBase},0.9)`;
+
+  // Store for Sidebar
+  this.elementColorMap.set(name, textColor);
+});
+
+// Make map global
+(window as any).elementColorMap = this.elementColorMap;
+}
+
 }

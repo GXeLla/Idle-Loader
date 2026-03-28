@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from './layout/sidebar/sidebar';
 import { GameEngineService } from './core/services/game-engine';
-import { NavbarComponent } from "./layout/navbar/navbar";
-import { RouterOutlet } from "@angular/router";
-import { OfflineModalComponent } from "./shared/components/offline-modal/offline-modal";
+import { NavbarComponent } from './layout/navbar/navbar';
+import { RouterOutlet } from '@angular/router';
+import { OfflineModalComponent } from './shared/components/offline-modal/offline-modal';
 import { SettingsService } from './core/services/settings';
 
 @Component({
@@ -15,12 +15,23 @@ import { SettingsService } from './core/services/settings';
   styleUrls: ['./app.scss'],
 })
 export class AppComponent {
+  isCreditsOpen = true;
+  isClosing = false;
   constructor(
     private engine: GameEngineService,
-    public settings: SettingsService 
+    public settings: SettingsService,
   ) {}
 
   ngOnInit() {
     this.engine.start(); // start timers and offline gains
   }
+
+closeCredits() {
+  this.isClosing = true;
+
+  setTimeout(() => {
+    this.isCreditsOpen = false;
+    this.isClosing = false;
+  }, 300); // match animation duration
+}
 }

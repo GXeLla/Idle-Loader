@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GameStateService, Player } from '../../core/state/game-state.service';
+import { BASE_CURRENCIES, CURRENCY_COLORS } from '../../core/config/worlds.config';
 
 @Component({
   selector: 'app-profile',
@@ -9,8 +10,28 @@ import { GameStateService, Player } from '../../core/state/game-state.service';
   templateUrl: './profile.html',
   styleUrls: ['./profile.scss']
 })
-export class ProfileComponent {
+export class ProfileComponent implements AfterViewInit {
 
+    ngAfterViewInit() {
+    this.applySpinnerColors();
+  }
+
+  applySpinnerColors() {
+    // select all spinner items
+    const spinnerItems = document.querySelectorAll<HTMLElement>('.spinner-item');
+
+    spinnerItems.forEach((item, index) => {
+      // first span
+      const firstSpan = item.querySelector('span');
+      if (!firstSpan) return;
+
+      // get currency by order (loop if more items than currencies)
+      const currencyName = BASE_CURRENCIES[index % BASE_CURRENCIES.length];
+      const color = CURRENCY_COLORS[currencyName] || '#ffffff';
+
+      firstSpan.style.color = color;
+    });
+  }
   selectedWorld?: string;
 
   constructor(public gameState: GameStateService) {

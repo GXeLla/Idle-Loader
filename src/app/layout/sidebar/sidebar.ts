@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { CommonModule, AsyncPipe } from '@angular/common';
 import { CeilPipe } from '../../core/pipes/ceil.pipe';
 import { GameStateService, Spinner } from '../../core/state/game-state.service';
@@ -8,13 +8,11 @@ import { GameStateService, Spinner } from '../../core/state/game-state.service';
   standalone: true,
   imports: [CommonModule, CeilPipe, AsyncPipe],
   templateUrl: './sidebar.html',
-  styleUrls: ['./sidebar.scss']
+  styleUrls: ['./sidebar.scss'],
 })
-export class SidebarComponent {
-  // active tab: 'spinners', 'totals', 'shop'
+export class SidebarComponent implements AfterViewInit {
   public activeTab: 'spinners' | 'totals' | 'shop' = 'spinners';
-
-  conversionRate = 2; // same as your shop
+  conversionRate = 2;
 
   constructor(public gameState: GameStateService) {}
 
@@ -22,9 +20,40 @@ export class SidebarComponent {
     return this.gameState.player$;
   }
 
+  ngAfterViewInit() {
+    // Apply colors initially
+    this.applySpinnerColors();
+
+    // Observe changes to sidebar to recolor new spinner-boxes dynamically
+    const sidebar = document.querySelector('.sidebar');
+    if (!sidebar) return;
+    const observer = new MutationObserver(() => this.applySpinnerColors());
+    observer.observe(sidebar, { childList: true, subtree: true });
+  }
+
+  /** Apply colors from BaseWorld to the whole spinner-box */
+  private applySpinnerColors() {
+    const map: Map<string, string> = (window as any).elementColorMap;
+    if (!map) return;
+
+    const spinnerBoxes = document.querySelectorAll('.spinner-box');
+    spinnerBoxes.forEach((el) => {
+      // Look for <p> inside .spinner-left
+      const leftP = el.querySelector('.spinner-left p');
+      if (!leftP) return;
+
+      const name = (leftP.textContent?.trim() || '').toLowerCase().replace(/\s+/g, '_');
+
+      if (map.has(name)) {
+        // Apply the color to the whole spinner-box
+        (el as HTMLElement).style.color = map.get(name)!;
+      }
+    });
+  }
+
   /** Sort spinners by value */
   sortSpinnersByValue(spinners: Spinner[]): Spinner[] {
-    return [...spinners].sort((a, b) => (b.amount * 0.02) - (a.amount * 0.02));
+    return [...spinners].sort((a, b) => b.amount * 0.02 - a.amount * 0.02);
   }
 
   /** Total coins for spinner */
@@ -33,7 +62,6 @@ export class SidebarComponent {
   }
 
   /** Shop helpers */
-
   getCostCurrency(index: number): string {
     if (index === 0) return this.gameState.player.spinners[0].currencyProduced;
     return this.gameState.player.spinners[index - 1].currencyProduced;
