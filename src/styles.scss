@@ -193,3 +193,13 @@ router-outlet + * {
     }
   }
 }
+
+.locked-spinner {
+  opacity: 0.4;
+  cursor: not-allowed;
+  filter: grayscale(1);
+
+  button {
+    cursor: not-allowed;
+  }
+}

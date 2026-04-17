@@ -73,8 +73,13 @@ export abstract class BaseWorld implements OnInit, AfterViewInit, OnDestroy {
 
     spinnerElements.forEach((el, index) => {
       const sp = this.gameState.player.spinners[index];
-      if (sp) this.startFallingAnimation(el, sp);
+      if (!sp) return;
+
+      this.stopAnimation(index);
+      this.startFallingAnimation(el, sp, index);
     });
+
+    this.syncSpinnerLockUI();
   }
 
   buyMax(index: number) {
@@ -82,6 +87,8 @@ export abstract class BaseWorld implements OnInit, AfterViewInit, OnDestroy {
     if (maxQty > 0) {
       this.gameState.buySpinner(index, maxQty);
       this.save.saveGame();
+
+      this.syncSpinnerLockUI();
     }
   }
 
@@ -144,11 +151,34 @@ export abstract class BaseWorld implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  private intervals = new Map<HTMLElement, any>();
+  private syncSpinnerLockUI() {
+    const spinnerBoxes = document.querySelectorAll<HTMLElement>('.spinner-box');
 
-  private startFallingAnimation(el: HTMLElement, sp: Spinner) {
-    if (this.intervals.has(el)) return;
+    spinnerBoxes.forEach((el, index) => {
+      const sp = this.gameState.player.spinners[index];
+      if (!sp) return;
 
+      // reset FIRST
+      this.renderer.removeClass(el, 'locked-spinner');
+
+      let locked = false;
+
+      if (sp.unlockAfter) {
+        const prev = this.gameState.player.spinners.find((s) => s.name === sp.unlockAfter);
+        if (!prev || !prev.active) {
+          locked = true;
+        }
+      }
+
+      if (locked) {
+        this.renderer.addClass(el, 'locked-spinner');
+      }
+    });
+  }
+
+  private intervals = new Map<number, any>();
+
+  private startFallingAnimation(el: HTMLElement, sp: Spinner, index: number) {
     const MAX_SYMBOLS = 3; // max simultaneous spans
     const interval = setInterval(() => {
       if (!this.settings.animationsEnabled) return; // stop if animations disabled
@@ -194,7 +224,15 @@ export abstract class BaseWorld implements OnInit, AfterViewInit, OnDestroy {
       );
     }, 1000); // spawn every 1s
 
-    this.intervals.set(el, interval);
+    this.intervals.set(index, interval);
+  }
+
+  private stopAnimation(index: number) {
+    const existing = this.intervals.get(index);
+    if (existing) {
+      clearInterval(existing);
+      this.intervals.delete(index);
+    }
   }
 
   ngOnDestroy() {
