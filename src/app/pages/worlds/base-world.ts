@@ -178,6 +178,8 @@ export abstract class BaseWorld implements OnInit, AfterViewInit, OnDestroy {
 
   private intervals = new Map<number, any>();
 
+  
+
   private startFallingAnimation(el: HTMLElement, sp: Spinner, index: number) {
     const MAX_SYMBOLS = 3; // max simultaneous spans
     const interval = setInterval(() => {
