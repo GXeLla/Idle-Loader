@@ -26,7 +26,6 @@ export abstract class BaseWorld implements OnInit, AfterViewInit, OnDestroy {
   private intervalId: any;
   private worldConfig!: WorldConfig;
 
-
   // Store colors by text content
   private elementColorMap: Map<string, string> = new Map();
 
@@ -83,7 +82,6 @@ export abstract class BaseWorld implements OnInit, AfterViewInit, OnDestroy {
     if (maxQty > 0) {
       this.gameState.buySpinner(index, maxQty);
       this.save.saveGame();
-      window.location.reload();
     }
   }
 
@@ -204,55 +202,68 @@ export abstract class BaseWorld implements OnInit, AfterViewInit, OnDestroy {
     this.intervals.clear();
   }
 
-setRandomColors() {
-  // --- World titles ---
-  const titleElements = document.querySelectorAll('.world-title');
-  titleElements.forEach((el) => {
-    const name = (el.textContent?.trim() || '').toLowerCase().replace(/\s+/g, '_');
+  setRandomColors() {
+    // --- World titles ---
+    const titleElements = document.querySelectorAll('.world-title');
+    titleElements.forEach((el) => {
+      const name = (el.textContent?.trim() || '').toLowerCase().replace(/\s+/g, '_');
 
-    // random muted/gold/blue
-    let r = 0, g = 0, b = 0;
-    const hueType = Math.floor(Math.random() * 3);
-    switch (hueType) {
-      case 0: r = 150 + Math.floor(Math.random()*60); g = 100 + Math.floor(Math.random()*60); b = 50 + Math.floor(Math.random()*50); break;
-      case 1: r = 50 + Math.floor(Math.random()*50); g = 80 + Math.floor(Math.random()*50); b = 130 + Math.floor(Math.random()*60); break;
-      case 2: r = 180 + Math.floor(Math.random()*40); g = 160 + Math.floor(Math.random()*40); b = 100 + Math.floor(Math.random()*30); break;
-    }
-    const color = `rgba(${r},${g},${b},1)`;
-    (el as HTMLElement).style.color = color;
+      // random muted/gold/blue
+      let r = 0,
+        g = 0,
+        b = 0;
+      const hueType = Math.floor(Math.random() * 3);
+      switch (hueType) {
+        case 0:
+          r = 150 + Math.floor(Math.random() * 60);
+          g = 100 + Math.floor(Math.random() * 60);
+          b = 50 + Math.floor(Math.random() * 50);
+          break;
+        case 1:
+          r = 50 + Math.floor(Math.random() * 50);
+          g = 80 + Math.floor(Math.random() * 50);
+          b = 130 + Math.floor(Math.random() * 60);
+          break;
+        case 2:
+          r = 180 + Math.floor(Math.random() * 40);
+          g = 160 + Math.floor(Math.random() * 40);
+          b = 100 + Math.floor(Math.random() * 30);
+          break;
+      }
+      const color = `rgba(${r},${g},${b},1)`;
+      (el as HTMLElement).style.color = color;
 
-    // Store in map
-    this.elementColorMap.set(name, color);
-  });
+      // Store in map
+      this.elementColorMap.set(name, color);
+    });
 
-  // --- Spinner-box ---
- const spinnerElements = document.querySelectorAll('.spinner-box');
-spinnerElements.forEach((el) => {
-  // pick the spinner name from the .spinner-left p inside
-  const leftP = el.querySelector('.spinner-left p');
-  if (!leftP) return;
+    // --- Spinner-box ---
+    const spinnerElements = document.querySelectorAll('.spinner-box');
+    spinnerElements.forEach((el) => {
+      // pick the spinner name from the .spinner-left p inside
+      const leftP = el.querySelector('.spinner-left p');
+      if (!leftP) return;
 
-  const name = (leftP.textContent?.trim() || '').toLowerCase().replace(/\s+/g, '_');
+      const name = (leftP.textContent?.trim() || '').toLowerCase().replace(/\s+/g, '_');
 
-  // Pick a random color (golden/muted)
-  const r = 220 + Math.floor(Math.random() * 35);
-  const g = 170 + Math.floor(Math.random() * 30);
-  const b = 80 + Math.floor(Math.random() * 40);
-  const textColor = `rgba(${r},${g},${b},1)`;
+      // Pick a random color (golden/muted)
+      const r = 220 + Math.floor(Math.random() * 35);
+      const g = 170 + Math.floor(Math.random() * 30);
+      const b = 80 + Math.floor(Math.random() * 40);
+      const textColor = `rgba(${r},${g},${b},1)`;
 
-  // Apply the color to the whole spinner-box
-  (el as HTMLElement).style.color = textColor;
+      // Apply the color to the whole spinner-box
+      (el as HTMLElement).style.color = textColor;
 
-  // Optionally set a background too
-  const bgBase = 30 + Math.floor(Math.random() * 50);
-  (el as HTMLElement).style.backgroundColor = `rgba(${bgBase},${bgBase},${bgBase},0.9)`;
+      // Optionally set a background too
+      const bgBase = 30 + Math.floor(Math.random() * 50);
+      (el as HTMLElement).style.backgroundColor = `rgba(${bgBase},${bgBase},${bgBase},0.9)`;
 
-  // Store for Sidebar
-  this.elementColorMap.set(name, textColor);
-});
+      // Store for Sidebar
+      this.elementColorMap.set(name, textColor);
+    });
 
-// Make map global
-(window as any).elementColorMap = this.elementColorMap;
-}
-
+    // Make map global
+    (window as any).elementColorMap = this.elementColorMap;
+  }
 }
